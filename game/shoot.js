@@ -37,6 +37,8 @@ function collisions()
     bullet_collision();
     player_collision();
     player_falling();
+    bullet_collision_player()
+    player_collision_player()
 }
 
 function bullet_collision()
@@ -61,12 +63,26 @@ function player_collision()
     var x = player1.graphic.position.x + WIDTH / 2;
     var y = player1.graphic.position.y + HEIGHT / 2;
 
+    if ( x < 0 )
+        player1.graphic.position.x -= x;
     if ( x > WIDTH )
         player1.graphic.position.x -= x - WIDTH;
     if ( y < 0 )
         player1.graphic.position.y -= y;
     if ( y > HEIGHT )
         player1.graphic.position.y -= y - HEIGHT;
+
+    var x1 = player2.graphic.position.x + WIDTH / 2;
+    var y2 = player2.graphic.position.y + HEIGHT / 2;
+
+    if ( x < 0 )
+        player2.graphic.position.x -= x;
+    if ( x > WIDTH )
+        player2.graphic.position.x -= x - WIDTH;
+    if ( y < 0 )
+        player2.graphic.position.y -= y;
+    if ( y > HEIGHT )
+        player2.graphic.position.y -= y - HEIGHT;
 
 }
 
@@ -96,8 +112,46 @@ function player_falling()
             && (y > tileY) 
             && (y < mtileY))
         {
-           player1.dead();
+            if(player1.life <= 1)
+            {
+                player1.dead();
+            }
+            player1.life--;
+            player1.displayInfo();
         }
     }
+}
 
+function player_collision_player()
+{
+    if (player1.graphic.position.distanceTo(player2.graphic.position) < 10 && player2.life > 0)
+    {
+        if(player1.life <= 1)
+        {
+            player1.dead();
+            player2.dead();
+        }
+        else 
+        {
+            player1.life -= 1;
+            player1.displayInfo();
+            player2.life = 0;
+        }
+    }
+}
+
+function bullet_collision_player()
+{
+    for (var i = 0; i < player1.bullets.length; i++)
+    {
+        //collision between bullet and player
+        if (player1.bullets[i].position.distanceTo(player2.graphic.position) < 10)
+        {
+            scene.remove(player1.bullets[i]);
+            player2.life = 0;
+            player2.dead();
+            player1.bullets.splice(i, 1);
+            i--;
+        }
+    }
 }

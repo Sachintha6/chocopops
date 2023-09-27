@@ -22,16 +22,21 @@ var Player = function(name, color, position, direction) {
 
 Player.prototype.dead = function () {
     this.graphic.position.z = this.graphic.position.z-0.1;
-        //Nettoyage de la div container
+    scene.remove(this.graphic);
+    if(this.name == "player2") {
+        jQuery('#'+this.name+' >.life').text("L'ennemi est mort !");
+    }
+    else {
         $("#container").html("");
         jQuery('#'+this.name+' >.life').text("Tu es mort !");
         init();
+    }
 }
 
 Player.prototype.accelerate = function (distance) {
     var max = 2;
 
-    this.speed += distance / 4;
+    this.speed += distance / 8;
     if (this.speed >= max) {
         this.speed = max;
     }
@@ -40,7 +45,7 @@ Player.prototype.accelerate = function (distance) {
 Player.prototype.decelerate = function (distance) {
     var min = -1;
 
-    this.speed -= distance / 16;
+    this.speed -= distance / 10;
     if (this.speed <= min) {
         this.speed = min;
     }
